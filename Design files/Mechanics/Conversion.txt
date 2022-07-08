@@ -1,0 +1,16 @@
+Conversion Report:
+Created by DWG TrueView DWG Convert Friday, July 8, 2022, 12:50 PM.
+
+Conversion Summary
+------------------
+Conversion File Format:  AutoCAD 2004/LT 2004 Drawing Format
+Conversion package type: In-place (overwrite files)
+Converted DWG files:     1
+Recovered DWG files:     0
+Conversion errors:       0
+
+
+Converted Files
+---------------
+Root Drawings:
+	C:\Users\ferrerx\Documents\GitHub\Cell_stretcher_8DOF\Design files\Mechanics\Base.dwg
