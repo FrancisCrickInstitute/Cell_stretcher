@@ -4,30 +4,22 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-Encoder knob(26, 27);
-Encoder knob_2(23, 24);
-Encoder knob_3(20, 21);
-Encoder knob_4(15, 16);
+Encoder knob(38, 37);
 
-const int encoder_SW = 25;
-const int encoder_SW_2 = 22;
-const int encoder_SW_3 = 17;
-const int encoder_SW_4 = 14;
+const int encoder_SW = 39;
 
-const int Enable = 2;
-const int Enable_2 = 5;
-const int Enable_3 = 8;
-const int Enable_4 = 11;
+const int Enable = 1;
 
-Stepper M1(3, 4);       // STEP pin: 7, DIR pin: 6  // The stepper class encapsulates the physical properties of a stepper motor like pin numbers of the STEP and DIR signals, speed and acceleration of the motor.
-Stepper M2(6, 7);
-Stepper M3(9, 10);
-Stepper M4(12, 13);
 
-const int SW1 = 36;
-const int SW2 = 35;
-const int SW3 = 38;
-const int SW4 = 37;
+Stepper M1(7, 8);       // STEP pin: 7, DIR pin: 6  // The stepper class encapsulates the physical properties of a stepper motor like pin numbers of the STEP and DIR signals, speed and acceleration of the motor.
+Stepper M2(11, 12);
+Stepper M3(26, 27);
+Stepper M4(30, 31);
+
+const int SW1 = 15;
+const int SW2 = 17;
+const int SW3 = 21;
+const int SW4 = 23;
 
 StepControl step_controller;    // The StepControl class is used to synchronously move up to 10 motors to their target positions.
 
@@ -39,9 +31,9 @@ StepControl step_controller;    // The StepControl class is used to synchronousl
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-const int MS1 = 28;
-const int MS2 = 29;
-const int MS3 = 30;
+const int MS1 = 2;
+const int MS2 = 3;
+const int MS3 = 4;
 
 float um_per_step = 1.6; //400 steps/second
 int steps = 0;
@@ -53,18 +45,12 @@ void setup()
   pinMode(MS3, OUTPUT);
 
   pinMode(Enable, OUTPUT);
-  pinMode(Enable_2, OUTPUT);
-  pinMode(Enable_3, OUTPUT);
-  pinMode(Enable_4, OUTPUT);
 
   digitalWrite(MS1, HIGH); // sets the digital pin MS1, MS2, MS3 to HIGH
   digitalWrite(MS2, LOW);
   digitalWrite(MS3, LOW);
 
   digitalWrite(Enable, LOW); // set the enables to LOW
-  digitalWrite(Enable_2, LOW);
-  digitalWrite(Enable_3, LOW);
-  digitalWrite(Enable_4, LOW);
 
   // Set the motor max acceleration
   M1.setMaxSpeed(5000)
@@ -122,13 +108,14 @@ void setup()
 
 void loop()
 {
+ 
   steps = 3000;
   M1.setTargetAbs(steps);
   M2.setTargetAbs(steps);
   M3.setTargetAbs(steps);
   M4.setTargetAbs(steps);
   step_controller.move(M1, M2, M3, M4);
-  delay(500);
+  //delay(500);
   
   steps = 2500;
   M1.setTargetAbs(steps);
@@ -136,7 +123,8 @@ void loop()
   M3.setTargetAbs(steps);
   M4.setTargetAbs(steps);
   step_controller.move(M1, M2, M3, M4);
-  delay(500);
+  //delay(500);
+  
 }
 
 // Function to get the steps from the mm
@@ -158,34 +146,34 @@ float step_to_mm (int steps)
 //Function to rotate the left motor CW
 void TurnClockwise_M1 (int pd)
 {
-  digitalWrite(4, 1);
-  digitalWrite(3, HIGH);
-  digitalWrite(3, LOW);
+  digitalWrite(8, 1);
+  digitalWrite(7, HIGH);
+  digitalWrite(7, LOW);
   delayMicroseconds(pd);
 }
 
 //Function to rotate the right motor CW
 void TurnClockwise_M2 (int pd)
 {
-  digitalWrite(7, 1);
-  digitalWrite(6, HIGH);
-  digitalWrite(6, LOW);
+  digitalWrite(12, 1);
+  digitalWrite(11, HIGH);
+  digitalWrite(11, LOW);
   delayMicroseconds(pd);
 }
 
 void TurnClockwise_M3 (int pd)
 {
-  digitalWrite(10, 1);
-  digitalWrite(9, HIGH);
-  digitalWrite(9, LOW);
+  digitalWrite(27, 1);
+  digitalWrite(26, HIGH);
+  digitalWrite(26, LOW);
   delayMicroseconds(pd);
 }
 
 void TurnClockwise_M4 (int pd)
 {
-  digitalWrite(13, 1);
-  digitalWrite(12, HIGH);
-  digitalWrite(12, LOW);
+  digitalWrite(31, 1);
+  digitalWrite(30, HIGH);
+  digitalWrite(30, LOW);
   delayMicroseconds(pd);
 }
 
