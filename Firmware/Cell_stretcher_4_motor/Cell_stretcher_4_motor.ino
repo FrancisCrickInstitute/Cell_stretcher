@@ -109,6 +109,9 @@ void setup()
   M3.setTargetAbs(initial_steps);
   M4.setTargetAbs(initial_steps);
   step_controller.move(M1, M2, M3, M4);
+
+  
+  digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat
 }
 
 void loop()
@@ -130,6 +133,8 @@ void loop()
   if (state == 1)
   {
     read_pushbutton();
+
+    digitalWrite(Enable, LOW); // Enable the motor again
     
     // Set the target for each motor and move to the target
     M1.setTargetAbs(initial_steps-steps);
@@ -138,7 +143,11 @@ void loop()
     M4.setTargetAbs(initial_steps-steps);
     step_controller.move(M1, M2, M3, M4);
 
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat
+
     delay(t);
+
+    digitalWrite(Enable, LOW); // Enable the motor again
 
     // Com back to the origin
     M1.setTargetAbs(initial_steps);
@@ -146,6 +155,8 @@ void loop()
     M3.setTargetAbs(initial_steps);
     M4.setTargetAbs(initial_steps);
     step_controller.move(M1, M2, M3, M4);
+
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat
   }
 
 }
