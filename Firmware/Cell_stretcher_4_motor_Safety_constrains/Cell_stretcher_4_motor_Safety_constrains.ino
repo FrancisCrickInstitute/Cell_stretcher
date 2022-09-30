@@ -121,11 +121,19 @@ void loop()
 
   freq = abs(freq_knob.read())/4*freq_factor; // Select the frequency in Hz
   stretch = abs(stretch_knob.read())/4*0.05; // select the stretch in mm 
+
+  //Constrained frequancy and stretch
+  freq = constrain(freq, 0, 4);
+  stretch = constrain(stretch, 0, 2);
+  
+  // Calculate percentage of stretch, period and motor speed based on the previous user selection
   p_stretch = 2*stretch/(initial_stretch_diameter)*100; //2 times because it is in 2 directions simultaneously
   T = 1/freq; // Calculate the period
   vel = stretch/(T/2);
   //t = T*1000; // Convert the period in milliseconds
 
+
+  
   // Get steps from mm selected by the user using the stretch knob
   steps = mm_to_step(stretch/2); // Divided by two beacuse it is what will move each stretcher
 
