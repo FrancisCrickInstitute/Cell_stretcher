@@ -164,6 +164,16 @@ void loop()
     read_pushbutton();
     one_by_one();
   };
+  if (state == 1 && mode == 3)
+  {
+    read_pushbutton();
+    x_axis();
+  };
+  if (state == 1 && mode == 4)
+  {
+    read_pushbutton();
+    y_axis();
+  };
 }
 
 // Function to get the steps from the mm
@@ -235,7 +245,7 @@ void read_pushbutton2()
     if (pushbutton2.fallingEdge())
     {
       mode = mode +1;
-      mode = constrain(mode, 0, 2);
+      mode = constrain(mode, 0, 4);
     }
   }
 }
@@ -307,6 +317,11 @@ void OLED_display()
   if (state == 0){display.println(F("Inactive"));}
   if (state == 1){display.println(F("Active"));}
   display.print(F("Mode:"));
+  if (mode == 0){display.println(F("Simult"));}
+  if (mode == 1){display.println(F("Alternate"));}
+  if (mode == 2){display.println(F("Separete"));}
+  if (mode == 3){display.println(F("X axis"));}
+  if (mode == 4){display.println(F("Y axis"));}
   display.print(mode);
   display.display();
 }
@@ -459,4 +474,51 @@ void one_by_one()
     step_controller.move(M4);
 
     digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat 
+}
+
+void y_axis()
+{
+    
+    digitalWrite(Enable, LOW); // Enable the motor again
+    
+    // Move x axis
+    M1.setTargetAbs(initial_steps-steps);
+    M3.setTargetAbs(initial_steps-steps);
+    step_controller.move(M1, M3);
+
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat
+
+    //delay(t);
+
+    digitalWrite(Enable, LOW); // Enable the motor again
+
+    // Com back to the origin
+    M1.setTargetAbs(initial_steps);
+    M3.setTargetAbs(initial_steps);
+    step_controller.move(M1, M3);
+
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat  
+}
+
+void x_axis()
+{
+    digitalWrite(Enable, LOW); // Enable the motor again
+
+    // Move y axis
+    M2.setTargetAbs(initial_steps-steps);
+    M4.setTargetAbs(initial_steps-steps);
+    step_controller.move(M2, M4);
+
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat
+
+    //delay(t);
+
+    digitalWrite(Enable, LOW); // Enable the motor again
+
+    // Com back to the origin
+    M2.setTargetAbs(initial_steps);
+    M4.setTargetAbs(initial_steps);
+    step_controller.move(M2, M4);
+
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat  
 }
