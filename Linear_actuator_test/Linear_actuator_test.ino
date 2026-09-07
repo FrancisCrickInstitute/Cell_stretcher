@@ -94,11 +94,11 @@ void setup()
   
     // Homing routine
 
-  while (digitalRead(SWx) == HIGH)      
-  {
-    TurnClockwise_M1 (1000);
-    Serial.println(digitalRead(SWx));
-  }
+//  while (digitalRead(SWx) == HIGH)      
+//  {
+//    TurnClockwise_M1 (1000);
+//    Serial.println(digitalRead(SWx));
+//  }
 //  while (digitalRead(SWy) == HIGH)      
 //  {
 //    TurnClockwise_M2 (100);
@@ -111,10 +111,13 @@ void loop()
     OLED_display();
     //read_pushbutton();
     //steps = knob.read()/2;
-    steps = steps + 10;
+    steps = steps - 100;
+    //Serial.println(steps); 
     Mx.setTargetAbs(steps);
-    step_controller.move(Mx);  
+    step_controller.move(Mx); 
     delay(3000); 
+
+    
 //    if (pushbutton.update()) 
 //    {
 //      if (pushbutton.fallingEdge()) 

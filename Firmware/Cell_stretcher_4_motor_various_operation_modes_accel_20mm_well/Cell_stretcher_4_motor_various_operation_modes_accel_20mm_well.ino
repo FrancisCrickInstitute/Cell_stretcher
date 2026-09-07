@@ -42,9 +42,10 @@ const int MS1 = 2;
 const int MS2 = 3;
 const int MS3 = 4;
 
-float um_per_step = 1.6; //400 steps/second
+float um_per_step = 1.6; //400 steps/revolution
 int steps = 0;
-const int initial_steps = 3000;
+const int initial_steps = 3000-1080;//3000;
+const int compression_steps = 3000;
 
 int mode = 0;
 
@@ -52,7 +53,7 @@ float freq = 0;
 float freq_factor = 0.05;
 float stretch = 0;
 float T;
-const float initial_stretch_diameter = 14.6;
+const float initial_stretch_diameter = 20;
 float p_stretch;
 unsigned long t = 0;
 bool state = 0;
@@ -134,13 +135,13 @@ void loop()
   p_stretch = 2*stretch/(initial_stretch_diameter)*100; //2 times because it is in 2 directions simultaneously
   T = 1/freq; // Calculate the period
   
-  vel = 1.5*(stretch/(T/2)); // 1.5 = 3/2 Beause 1/3 of the time is used for accelerating, 1/3 is used for constant velocity, and 1/3 is used for decelerating.
+  vel = 1.5*(stretch/(T/2)); // 1.5 = 3/2 Because 1/3 of the time is used for accelerating, 1/3 is used for constant velocity, and 1/3 is used for decelerating.
   accel = vel/(T/6);
   
   //t = T*1000; // Convert the period in milliseconds
 
   // Get steps from mm selected by the user using the stretch knob
-  steps = mm_to_step(stretch/2); // Divided by two beacuse it is what will move each stretcher
+  steps = mm_to_step(stretch/2); // Divided by two beacuse it is what will move each arm
 
   // Get steps/s from the selected velocity
   steps_s = mm_to_step(vel);
@@ -184,6 +185,11 @@ void loop()
   {
     read_pushbutton();
     y_axis();
+  };
+  if (state == 1 && mode == 5)
+  {
+    read_pushbutton();
+    compression();
   };
 }
 
@@ -256,7 +262,7 @@ void read_pushbutton2()
     if (pushbutton2.fallingEdge())
     {
       mode = mode +1;
-      mode = constrain(mode, 0, 4);
+      mode = constrain(mode, 0, 5);
     }
   }
 }
@@ -342,6 +348,7 @@ void OLED_display()
   if (mode == 2){display.println(F("Separete"));}
   if (mode == 3){display.println(F("X axis"));}
   if (mode == 4){display.println(F("Y axis"));}
+  if (mode == 5){display.println(F("Compress"));}
   display.print(mode);
   display.display();
 }
@@ -368,6 +375,34 @@ void simultaneous()
     M2.setTargetAbs(initial_steps);
     M3.setTargetAbs(initial_steps);
     M4.setTargetAbs(initial_steps);
+    step_controller.move(M1, M2, M3, M4);
+
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat  
+}
+
+
+void compression()
+{
+   digitalWrite(Enable, LOW); // Enable the motor again
+    
+    // Set the target for each motor and move to the target
+    M1.setTargetAbs(initial_steps-steps);
+    M2.setTargetAbs(initial_steps-steps);
+    M3.setTargetAbs(initial_steps-steps);
+    M4.setTargetAbs(initial_steps-steps);
+    step_controller.move(M1, M2, M3, M4);
+
+    digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat
+
+    //delay(t);
+
+    digitalWrite(Enable, LOW); // Enable the motor again
+
+    // Com back to the origin but 2 mm closer
+    M1.setTargetAbs(compression_steps);
+    M2.setTargetAbs(compression_steps);
+    M3.setTargetAbs(compression_steps);
+    M4.setTargetAbs(compression_steps);
     step_controller.move(M1, M2, M3, M4);
 
     digitalWrite(Enable, HIGH); // Remove power from the motor to decrease heat  
